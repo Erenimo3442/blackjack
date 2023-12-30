@@ -1,3 +1,3 @@
 # blackjack
 
-This code runs a blackjack game.
+This code will run a blackjack game.
