@@ -1,102 +1,115 @@
 import random
 
+# Sum function
+def sum(x):
 
-def toplam(x):
+	x_sum = 0
+	x_ace = False
 
-	x_toplam = 0
-	x_as = False
-
-	for i in x:
-		if i == "K(10)" or i == "Q(10)" or i == "J(10)":
-			x_toplam += 10
-		elif i != "A(1-11)":
-			x_toplam += i
-		# Kart AS ise:
+    # Check all the cards in the list
+	for card in x:
+		if card == "K(10)" or card == "Q(10)" or card == "J(10)":
+			x_sum += 10
+		elif card != "A(1-11)":
+			x_sum += card
+		# If the card is Ace:
 		else:
-			x_as = True
+			x_ace = True
 			continue
-
-	if x_as == True:
-		if x_toplam <= 10:
-			x_toplam += 11
+		
+    # If the card is Ace:		
+	if x_ace == True:
+		if x_sum <= 10:
+			x_sum += 11
 		else:
-			x_toplam += 1
-	return x_toplam
+			x_sum += 1
+	return x_sum
 
+# Blackjack function
 def blackjack():
 
-	kartlar = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J(10)", "Q(10)", "K(10)", "A(1-11)",
+	cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J(10)", "Q(10)", "K(10)", "A(1-11)",
 			   2, 3, 4, 5, 6, 7, 8, 9, 10, "J(10)", "Q(10)", "K(10)", "A(1-11)",
 			   2, 3, 4, 5, 6, 7, 8, 9, 10, "J(10)", "Q(10)", "K(10)", "A(1-11)",
 			   2, 3, 4, 5, 6, 7, 8, 9, 10, "J(10)", "Q(10)", "K(10)", "A(1-11)"]
-	oyuncu = [kartlar[random.randrange(0, 52)], kartlar[random.randrange(0, 52)]]
-	ai = [kartlar[random.randrange(0, 52)], kartlar[random.randrange(0, 52)]]
-
-	bitti = False
-
-	print("\nOyuncunun kartları: ", oyuncu, "=", toplam(oyuncu),
-	      "\nRakibin kartları:   ", str(ai[0]) + ", Kapalı kart")
-
-	while not bitti:
-
-		hamle = input("\nNe hamle yapmak istersiniz? (Kart çek/Çekme): (1/2)\n")
-
-		oyuncu_toplam = 0
-		rakip_toplam = 0
-		# oyuncu kart çekerse
-		if hamle == "1":
-			oyuncu.append(kartlar[random.randrange(0, 52)])
-
-			oyuncu_toplam = toplam(oyuncu)
-
-			rakip_toplam = toplam(ai)
-
-			if rakip_toplam < 17 and oyuncu_toplam <= 21:
-				ai.append(kartlar[random.randrange(0, 52)])
-				rakip_toplam = toplam(ai)
-
-			print("\nİkiniz de kart çektiniz."
-		          "\nOyuncunun kartları: ", oyuncu, "=", toplam(oyuncu),
-			      "\nRakibin kartları:   ", ai, "=", toplam(ai))
-		# oyuncu kart çekmezse
-		elif hamle == "2":
-
-			oyuncu_toplam = toplam(oyuncu)
-
-			rakip_toplam = toplam(ai)
-
-			if rakip_toplam < 17:
-				ai.append(kartlar[random.randrange(0, 52)])
-				rakip_toplam = toplam(ai)
-				# oyuncu kart çekmiyorsa ve toplam eşit ise oyun dursun
-				if oyuncu_toplam == rakip_toplam:
-					bitti = True
-
-			print("\nRakibin kart çekti."
-				  "\nOyuncunun kartları: ", oyuncu, "=", toplam(oyuncu),
-			      "\nRakibin kartları:   ", ai, "=", toplam(ai))
-		# kart çekmenin duracağı koşullar
-		if oyuncu_toplam >= 21 or rakip_toplam >= 21 or (oyuncu_toplam > rakip_toplam and rakip_toplam >= 17):
-			bitti = True
 	
+    # Player and opponent's cards
+	player = [cards[random.randrange(0, 52)], cards[random.randrange(0, 52)]]
+	ai = [cards[random.randrange(0, 52)], cards[random.randrange(0, 52)]]
 
-	# karşılaştırma
-	if oyuncu_toplam == 21:
-		print("\nBlackjack! Kazandın! Tebrikler.")
-	elif 21 > oyuncu_toplam > rakip_toplam or oyuncu_toplam < 21 and rakip_toplam > 21:
-		print("\nKazandın! Tebrikler.")
-		bitti = True
-	elif 21 >= oyuncu_toplam == rakip_toplam or (oyuncu_toplam > 21 and rakip_toplam > 21):
-		print("\nBerabere. Tekrar dene.")
-		bitti = True
-	elif 21 > rakip_toplam > oyuncu_toplam or oyuncu_toplam > 21 and rakip_toplam < 21:
-		print("\nKaybettin. Tekrar dene.")
-		bitti = True
+	end = False
+
+    # Print the cards
+	print("\nPlayer's cards:     ", player, "=", sum(player),
+	      "\nOpponent's cards:   ", str(ai[0]) + ", Closed card")
+
+    # Game loop
+	while not end:
+
+        # Check player's input
+		play = input("\nWhat do you want to do? (Draw card/stay): (1/2)\n")
+
+		player_sum = 0
+		opponent_sum = 0
+		# If player wants to draw a card
+		if play == "1":
+			player.append(cards[random.randrange(0, 52)])
+
+            # Sum of the cards
+			player_sum = sum(player)
+
+			opponent_sum = sum(ai)
+
+            # If opponent's sum is less than 17 and game is not over
+			if opponent_sum < 17 and player_sum <= 21:
+				ai.append(cards[random.randrange(0, 52)])
+				opponent_sum = sum(ai)
+
+			print("\nPlayer's cards:     ", player, "=", sum(player),
+			      "\nOpponent's cards:   ", ai, "=", sum(ai))
+			
+		# If player wants to stay
+		elif play == "2":
+            
+            # Sum of the cards
+			player_sum = sum(player)
+
+			opponent_sum = sum(ai)
+			
+            # If the sum of the cards are equal and player did not draw a card
+			if player_sum == opponent_sum:
+				end = True
+
+            # If opponent's sum is less than 17 and game is not over
+			if opponent_sum < 17:
+				ai.append(cards[random.randrange(0, 52)])
+				opponent_sum = sum(ai)
+				
+			print("\nPlayer's cards:     ", player, "=", sum(player),
+			      "\nOpponent's cards:   ", ai, "=", sum(ai))
+		# Conditions that will make the game end
+		if player_sum >= 21 or opponent_sum >= 21 or (player_sum > opponent_sum and opponent_sum >= 17):
+			end = True
+
+	# Comparison of the sums		
+	if 21 >= player_sum == opponent_sum or (player_sum > 21 and opponent_sum > 21):
+		print("\nDraw. Try again.")
+		
+	elif player_sum == 21:
+		print("\nBlackjack! You won! Congratulations.")
+		
+	elif 21 > player_sum > opponent_sum or player_sum < 21 and opponent_sum > 21:
+		print("\nYou won! Congratulations.")
+		
+	elif 21 > opponent_sum > player_sum or player_sum > 21 and opponent_sum < 21:
+		print("\nYou lost. Try again.")
+		
 	else:
-		print("\nBlackjack! Kaybettin. Tekrar dene.")
+		print("\nBlackjack! You lost. Try again.")
 
-	soru = input("Tekrar oynamak ister misin ? (1-2)")
+	ask = input("Would you like to play again? (Yes/No): (1/2)\n")
 
-	if soru == "1":
+    # If player wants to play again
+	if ask == "1":
 		blackjack()
 blackjack()
